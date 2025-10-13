@@ -21,6 +21,12 @@
             color: #4a4a4a; /* Dark gray text */
             font-weight: 500;
         }
+        /* Custom font style for Audio Resurgence text */
+        .font-bank-gothic {
+            font-family: "Bank Gothic MT", "Impact", "Arial Narrow", sans-serif;
+            letter-spacing: 0.05em; /* Add a little spacing to geometric fonts */
+            text-transform: uppercase;
+        }
     </style>
     <script>
         tailwind.config = {
@@ -42,7 +48,8 @@
         <header class="text-center mb-8">
             <img src="ARlogo.png" alt="Audio Resurgence Logo" class="h-16 sm:h-20 mx-auto mb-4" onerror="this.onerror=null;this.src='https://placehold.co/150x80/000000/ffffff?text=AUDIO RESURGENCE';">
             <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800">Product Evaluation Loan Agreement</h1>
-            <p class="text-xl text-indigo-600 mt-1">Audio Resurgence</p>
+            <!-- FONT COLOR CHANGE: text-indigo-600 changed to text-gray-900 -->
+            <p class="text-xl text-gray-900 mt-1 font-bank-gothic">Audio Resurgence</p>
         </header>
 
         <!-- Dynamic Form Fields and Sections -->
