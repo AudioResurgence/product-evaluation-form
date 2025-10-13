@@ -27,6 +27,19 @@
             letter-spacing: 0.05em; /* Add a little spacing to geometric fonts */
             text-transform: uppercase;
         }
+        /* Hide UI elements when printing/saving as PDF */
+        @media print {
+            .hide-on-print {
+                display: none !important;
+            }
+            body {
+                background-color: #fff !important; /* Ensure white background for PDF */
+            }
+            #agreement-container {
+                box-shadow: none !important;
+                border: none !important;
+            }
+        }
     </style>
     <script>
         tailwind.config = {
@@ -91,7 +104,7 @@
                     <input type="text" name="Customer_Company" placeholder="Customer Company (if applicable)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                     <input type="text" name="Billing_Address" placeholder="Billing Address" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
                     <!-- FIX: Changed name="_replyto" to name="email" to satisfy Formspree's default validation for a required 'email' field. -->
-                    <input type="email" name="email" placeholder="Contact Email" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
+                    <input type="email" name="email" placeholder="Contact Email (Used to reply)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
                     <input type="tel" name="Contact_Phone" placeholder="Contact Phone" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
             </section>
@@ -154,7 +167,7 @@
             </section>
 
             <!-- Submit Button -->
-            <div class="text-center pt-4">
+            <div class="text-center pt-4 hide-on-print" id="submitButtonContainer">
                 <button type="submit" id="submitButton" class="w-full sm:w-1/2 py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 transition duration-150 ease-in-out transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
                     Sign & Confirm Loan Agreement
                 </button>
@@ -174,6 +187,7 @@
         const signatureDataInput = document.getElementById('signatureDataInput');
         const messageBox = document.getElementById('messageBox');
         const submitButton = document.getElementById('submitButton');
+        const submitButtonContainer = document.getElementById('submitButtonContainer');
 
         let drawing = false;
         let lastX = 0;
@@ -293,10 +307,10 @@
         // --- Submission Handler with Formspree AJAX ---
         function showMessage(msg, style) {
             messageBox.textContent = msg;
-            messageBox.className = style + ' text-center p-4 rounded-lg text-lg font-semibold mt-4 block';
+            messageBox.className = style + ' text-center p-4 rounded-lg text-lg font-semibold mt-4 block hide-on-print'; // Add hide-on-print class
             setTimeout(() => {
                 messageBox.classList.add('hidden');
-            }, 8000); // Increased timeout for visibility
+            }, 8000); 
         }
 
         form.addEventListener('submit', async function(e) {
@@ -335,11 +349,27 @@
                 });
 
                 if (response.ok) {
-                    showMessage('Agreement successfully signed and submitted. Thank you!', 'bg-green-100 text-green-700 border border-green-200');
-                    form.reset(); // Reset visible fields
-                    clearCanvas();
-                    // Keep button disabled to prevent duplicate submissions
-                    submitButton.textContent = 'Agreement Submitted!';
+                    // Successful Submission: Provide Print/Save Option
+                    
+                    // 1. Hide the interactive signature elements and submit button
+                    document.getElementById('signatureCanvas').style.display = 'none';
+                    document.getElementById('clearSignature').style.display = 'none';
+                    submitButtonContainer.style.display = 'none';
+
+                    // 2. Inject success message with print button (persistent)
+                    messageBox.innerHTML = `
+                        <p class="text-2xl mb-2 text-green-700">Agreement Submitted Successfully!</p>
+                        <p class="text-base text-green-600">A signed copy has been delivered to Audio Resurgence.</p>
+                        <p class="text-base font-bold mt-3">To save a copy for yourself (recommended), click the button below:</p>
+                        <button type="button" onclick="window.print()" class="mt-4 py-2 px-6 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700 transition duration-150">
+                            Print / Save as PDF Copy
+                        </button>
+                    `;
+                    messageBox.className = 'bg-green-100 text-green-700 border border-green-200 text-center p-6 rounded-lg text-lg font-semibold mt-4 block hide-on-print';
+                    
+                    // Do NOT call form.reset() or the timeout here, as we want the signed content to remain for printing
+                    return;
+
                 } else {
                     const errorText = await response.text();
                     console.error("Formspree Error Response:", errorText);
