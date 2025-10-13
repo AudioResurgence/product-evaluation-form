@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Evaluation Loan Agreement (E-Sign)</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for signature pad */
+        #signatureCanvas {
+            border: 2px solid #e5e7eb; /* Gray border */
+            cursor: crosshair;
+            touch-action: none; /* Disable default touch actions for drawing */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans p-4 sm:p-8">
+
+    <div id="agreement-container" class="max-w-4xl mx-auto bg-white shadow-2xl rounded-xl p-6 sm:p-10 border border-gray-100">
+
+        <!-- Header and Logo -->
+        <header class="text-center mb-8">
+            <img src="ARlogo.png-b71c5319-73b3-4ad5-ba73-ac761d13a75a" alt="Audio Resurgence Logo" class="h-16 sm:h-20 mx-auto mb-4" onerror="this.onerror=null;this.src='https://placehold.co/150x80/000000/ffffff?text=AUDIO RESURGENCE';">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800">Product Evaluation Loan Agreement</h1>
+            <p class="text-xl text-indigo-600 mt-1">Audio Resurgence</p>
+        </header>
+
+        <!-- Dynamic Form Fields and Sections -->
+        <form id="loanAgreementForm" class="space-y-8">
+
+            <!-- Section 1: Company & Loan Details (Pre-filled/Static) -->
+            <section class="border border-indigo-200 p-4 rounded-lg bg-indigo-50">
+                <h2 class="text-xl font-bold text-indigo-700 mb-4">1. Product and Company Details</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                    <div><span class="font-semibold">Lending Company:</span> AUDIO RESURGENCE / <input type="text" value="[COMPANY NAME]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
+                    <div><span class="font-semibold">Company Address:</span> <input type="text" value="[COMPANY ADDRESS]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
+                    <div><span class="font-semibold">Company Contact:</span> <input type="email" value="[COMPANY EMAIL / PHONE NUMBER]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
+                    <div><span class="font-semibold">Loan Start Date:</span> <input type="date" value="" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required id="loanStartDate"></div>
+                    <div><span class="font-semibold">Scheduled Return Date:</span> <input type="date" value="" class="w-full p-1 border-b font-bold border-red-500 focus:border-indigo-500 rounded-sm" required id="scheduledReturnDate" readonly></div>
+                </div>
+            </section>
+            
+            <!-- Section 2: Evaluator (Customer) Details (Required Input) -->
+            <section class="p-6 rounded-lg bg-white border border-gray-200 shadow-md">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">2. Evaluator (Customer) Details</h2>
+                <div class="space-y-3">
+                    <input type="text" placeholder="Evaluator Name" id="evaluatorName" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
+                    <input type="text" placeholder="Customer Company (if applicable)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="text" placeholder="Billing Address" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
+                    <input type="email" placeholder="Contact Email" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
+                    <input type="tel" placeholder="Contact Phone" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+            </section>
+
+            <!-- Section 3: Product on Loan (Pre-filled/Static) -->
+            <section class="border border-yellow-200 p-4 rounded-lg bg-yellow-50">
+                <h2 class="text-xl font-bold text-yellow-700 mb-4">3. Product on Loan</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                    <div><span class="font-semibold">Product Name:</span> <input type="text" value="[PRODUCT NAME]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
+                    <div><span class="font-semibold">Model / SKU:</span> <input type="text" value="[MODEL / SKU NUMBER]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
+                    <div><span class="font-semibold">Serial Number:</span> <input type="text" value="[PRODUCT SERIAL NUMBER]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
+                    <div class="md:col-span-2"><span class="font-semibold">Trade Price (for invoicing):</span> <input type="text" value="[TRADE PRICE AMOUNT HERE - e.g., $X,XXX.00]" class="w-full p-1 border-b font-extrabold text-red-600 border-red-300 focus:border-indigo-500 rounded-sm" required id="tradePrice"></div>
+                </div>
+            </section>
+
+            <!-- Section 4: Loan Terms and Conditions -->
+            <section class="p-6 rounded-lg bg-white border border-gray-200 shadow-md">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">4. Loan Terms and Conditions</h2>
+                <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                    <li>**Loan Period:** The loan period is strictly **two (2) weeks (14 calendar days)**, beginning on the Loan Start Date.</li>
+                    <li>**Product Care:** The Evaluator agrees to handle the product with reasonable care and is responsible for any damage, loss, or theft that occurs during the loan period.</li>
+                    <li>**Return Obligation:** The Evaluator **MUST** return the product, complete with all original accessories and packaging, to the Lending Company no later than the Scheduled Return Date.</li>
+                    <li class="p-3 bg-red-50 border-l-4 border-red-500 font-semibold">
+                        **Failure to Return Clause:** If the product is not returned to the Lending Company on or before the Scheduled Return Date, the Evaluator hereby agrees and acknowledges that AUDIO RESURGENCE will immediately invoice the Evaluator the full Trade Price amount of <span id="tradePriceDisplay" class="text-red-700">[TRADE PRICE AMOUNT HERE]</span> listed in Section 3. This invoice will be due for immediate payment upon receipt. The Evaluator's signature below constitutes a binding agreement to this invoicing term.
+                    </li>
+                    <li>**Condition of Return:** The product must be returned in good working order and in the same condition as when received, subject only to normal wear and tear from use.</li>
+                </ol>
+            </section>
+
+            <!-- Section 5: Authorization and Signature -->
+            <section class="p-6 rounded-lg bg-white border border-gray-300 shadow-xl">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">5. Authorization and Electronic Signature</h2>
+                
+                <p class="text-sm text-gray-600 mb-4">By providing your electronic signature below, you confirm that you have read, understood, and agree to all the terms and conditions, specifically the invoicing clause for non-return.</p>
+
+                <!-- Signature Pad -->
+                <div class="mb-4">
+                    <label for="signatureCanvas" class="block text-lg font-medium text-gray-700 mb-2">Electronic Signature (Draw Below)</label>
+                    <canvas id="signatureCanvas" class="w-full bg-white rounded-md" height="150"></canvas>
+                    <button type="button" id="clearSignature" class="mt-2 text-sm text-red-600 hover:text-red-800 font-medium">Clear Signature</button>
+                    <input type="hidden" id="signatureData" required>
+                </div>
+
+                <!-- Print Name & Date -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                    <div>
+                        <label for="printedName" class="block text-sm font-medium text-gray-700">Evaluator Name (Print)</label>
+                        <input type="text" id="printedName" class="w-full p-2 border border-gray-300 rounded-md mt-1 focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                    <div>
+                        <label for="signatureDate" class="block text-sm font-medium text-gray-700">Date of Signature</label>
+                        <input type="date" id="signatureDate" class="w-full p-2 border border-gray-300 rounded-md mt-1 focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submit Button -->
+            <div class="text-center pt-4">
+                <button type="submit" class="w-full sm:w-1/2 py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 transition duration-150 ease-in-out transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
+                    Sign & Confirm Loan Agreement
+                </button>
+            </div>
+            
+            <!-- Message Box for Confirmation -->
+            <div id="messageBox" class="hidden text-center p-4 rounded-lg text-lg font-semibold transition duration-300 ease-in-out"></div>
+        </form>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('signatureCanvas');
+        const ctx = canvas.getContext('2d');
+        const clearButton = document.getElementById('clearSignature');
+        const form = document.getElementById('loanAgreementForm');
+        const signatureDataInput = document.getElementById('signatureData');
+        const messageBox = document.getElementById('messageBox');
+        
+        let drawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Utility to update the trade price display in the terms section
+        const tradePriceInput = document.getElementById('tradePrice');
+        const tradePriceDisplay = document.getElementById('tradePriceDisplay');
+
+        function updateTradePriceDisplay() {
+            tradePriceDisplay.textContent = tradePriceInput.value || "[TRADE PRICE AMOUNT HERE]";
+        }
+
+        tradePriceInput.addEventListener('input', updateTradePriceDisplay);
+        document.addEventListener('DOMContentLoaded', updateTradePriceDisplay); // Initial load
+
+        // Utility to calculate return date (14 days after start date)
+        const loanStartDateInput = document.getElementById('loanStartDate');
+        const scheduledReturnDateInput = document.getElementById('scheduledReturnDate');
+
+        loanStartDateInput.addEventListener('change', () => {
+            const startDate = loanStartDateInput.value;
+            if (startDate) {
+                const date = new Date(startDate);
+                // Set time to noon UTC to avoid timezone issues when adding days
+                date.setUTCHours(12, 0, 0, 0); 
+                date.setDate(date.getDate() + 14);
+                
+                const returnDateString = date.toISOString().split('T')[0];
+                scheduledReturnDateInput.value = returnDateString;
+            } else {
+                scheduledReturnDateInput.value = '';
+            }
+        });
+
+        // Set up canvas context
+        function setupCanvas() {
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#000000';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill with white background
+        }
+        
+        setupCanvas();
+
+        function draw(e) {
+            if (!drawing) return;
+            
+            // Get position relative to canvas
+            const rect = canvas.getBoundingClientRect();
+            let currentX, currentY;
+            
+            if (e.touches) {
+                // Touch events
+                currentX = e.touches[0].clientX - rect.left;
+                currentY = e.touches[0].clientY - rect.top;
+            } else {
+                // Mouse events
+                currentX = e.clientX - rect.left;
+                currentY = e.clientY - rect.top;
+            }
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(currentX, currentY);
+            ctx.stroke();
+            
+            [lastX, lastY] = [currentX, currentY];
+        }
+
+        function startDrawing(e) {
+            e.preventDefault();
+            drawing = true;
+            
+            const rect = canvas.getBoundingClientRect();
+            let startX, startY;
+
+            if (e.touches) {
+                startX = e.touches[0].clientX - rect.left;
+                startY = e.touches[0].clientY - rect.top;
+            } else {
+                startX = e.clientX - rect.left;
+                startY = e.clientY - rect.top;
+            }
+
+            [lastX, lastY] = [startX, startY];
+        }
+
+        function stopDrawing() {
+            drawing = false;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            setupCanvas();
+            signatureDataInput.value = ''; // Clear hidden data as well
+        }
+
+        // Event Listeners for drawing
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', stopDrawing);
+
+        // Event Listeners for touch
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        window.addEventListener('touchend', stopDrawing);
+
+        // Clear button listener
+        clearButton.addEventListener('click', clearCanvas);
+
+        // Form Submission Handler
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Check if a signature has been drawn (check if canvas is not blank)
+            const imageData = canvas.toDataURL();
+            const blankCanvas = document.createElement('canvas');
+            blankCanvas.width = canvas.width;
+            blankCanvas.height = canvas.height;
+            const blankData = blankCanvas.toDataURL();
+
+            if (imageData === blankData) {
+                showMessage('Please provide your signature before submitting.', 'bg-red-100 text-red-700 border border-red-200');
+                return;
+            }
+
+            // Capture the signature data
+            signatureDataInput.value = imageData;
+
+            // Gather all form data (for demonstration purposes)
+            const formData = {
+                evaluatorName: document.getElementById('evaluatorName').value,
+                printedName: document.getElementById('printedName').value,
+                signatureDate: document.getElementById('signatureDate').value,
+                loanStartDate: loanStartDateInput.value,
+                scheduledReturnDate: scheduledReturnDateInput.value,
+                tradePrice: tradePriceInput.value,
+                signatureImage: signatureDataInput.value,
+                // Add other fields as needed
+            };
+            
+            // In a real application, you would send this 'formData' object to your backend server
+            // for secure storage and verification.
+            console.log('--- Agreement Submitted ---');
+            console.log(formData);
+            console.log('---------------------------');
+            
+            showMessage('Agreement successfully signed and submitted. Thank you!', 'bg-green-100 text-green-700 border border-green-200');
+
+            // Optionally disable the form after successful submission
+            form.querySelector('button[type="submit"]').disabled = true;
+        });
+
+        function showMessage(msg, style) {
+            messageBox.textContent = msg;
+            messageBox.className = style + ' text-center p-4 rounded-lg text-lg font-semibold mt-4 block';
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 5000);
+        }
+    </script>
+
+</body>
+</html>
