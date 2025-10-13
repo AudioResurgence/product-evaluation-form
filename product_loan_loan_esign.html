@@ -90,7 +90,8 @@
                     <input type="text" name="Evaluator_Name" placeholder="Evaluator Name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
                     <input type="text" name="Customer_Company" placeholder="Customer Company (if applicable)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                     <input type="text" name="Billing_Address" placeholder="Billing Address" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
-                    <input type="email" name="_replyto" placeholder="Contact Email (Used to reply)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
+                    <!-- FIX: Changed name="_replyto" to name="email" to satisfy Formspree's default validation for a required 'email' field. -->
+                    <input type="email" name="email" placeholder="Contact Email (Used to reply)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
                     <input type="tel" name="Contact_Phone" placeholder="Contact Phone" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
             </section>
