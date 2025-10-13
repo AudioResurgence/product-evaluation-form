@@ -13,6 +13,14 @@
             cursor: crosshair;
             touch-action: none; /* Disable default touch actions for drawing */
         }
+        /* Make read-only inputs look like fixed text, but still sendable */
+        .input-static {
+            background-color: #f7f7f7;
+            border-style: dashed;
+            border-width: 1px;
+            color: #4a4a4a; /* Dark gray text */
+            font-weight: 500;
+        }
     </style>
     <script>
         tailwind.config = {
@@ -38,87 +46,108 @@
         </header>
 
         <!-- Dynamic Form Fields and Sections -->
-        <form id="loanAgreementForm" action="[https://formspree.io/f/mnngobqo]" method="POST"
+        
+        <!--
+            CRITICAL STEP 1: REPLACE THE ACTION URL BELOW!
+            It must be your unique Formspree endpoint (e.g., https://formspree.io/f/xxxxxxxx)
+        -->
+        <form id="loanAgreementForm" action="https://formspree.io/f/mnngobqo" method="POST" class="space-y-8">
 
-            <!-- Section 1: Company & Loan Details (Pre-filled/Static) -->
-            <section class="border border-indigo-200 p-4 rounded-lg bg-indigo-50">
-                <h2 class="text-xl font-bold text-indigo-700 mb-4">1. Product and Company Details</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
-                    <div><span class="font-semibold">Lending Company:</span> AUDIO RESURGENCE / <input type="text" value="[COMPANY NAME]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
-                    <div><span class="font-semibold">Company Address:</span> <input type="text" value="[COMPANY ADDRESS]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
-                    <div><span class="font-semibold">Company Contact:</span> <input type="email" value="[COMPANY EMAIL / PHONE NUMBER]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
-                    <div><span class="font-semibold">Loan Start Date:</span> <input type="date" value="" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required id="loanStartDate"></div>
-                    <div><span class="font-semibold">Scheduled Return Date:</span> <input type="date" value="" class="w-full p-1 border-b font-bold border-red-500 focus:border-indigo-500 rounded-sm" required id="scheduledReturnDate" readonly></div>
+            <!-- Hidden Fields for Company Details (These stay static) -->
+            <input type="hidden" name="_subject" value="New Product Loan Agreement Signed">
+            <input type="hidden" name="Lending_Company" value="AUDIO RESURGENCE / [COMPANY NAME]">
+            <input type="hidden" name="Company_Address" value="[COMPANY ADDRESS]">
+            <input type="hidden" name="Company_Contact" value="[COMPANY EMAIL / PHONE NUMBER]">
+
+
+            <!-- Section 1: Product Details (Now Read-Only and Pre-filled by URL) -->
+            <section class="border border-gray-200 p-4 rounded-lg bg-white shadow-md">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">1. Product Details (Confirmed by Link)</h2>
+                <div class="space-y-3">
+                    <label class="block text-sm font-medium text-gray-700">Product Name</label>
+                    <input type="text" id="productNameInput" name="Product_Name" value="Loading..." class="w-full p-2 input-static rounded-md" readonly required>
+                    
+                    <label class="block text-sm font-medium text-gray-700">Model / SKU Number</label>
+                    <input type="text" id="modelSkuInput" name="Model_SKU" value="Loading..." class="w-full p-2 input-static rounded-md" readonly required>
+                    
+                    <label class="block text-sm font-medium text-gray-700">Serial Number</label>
+                    <input type="text" id="serialNumberInput" name="Serial_Number" value="Loading..." class="w-full p-2 input-static rounded-md" readonly required>
                 </div>
             </section>
-            
+
+
             <!-- Section 2: Evaluator (Customer) Details (Required Input) -->
             <section class="p-6 rounded-lg bg-white border border-gray-200 shadow-md">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">2. Evaluator (Customer) Details</h2>
                 <div class="space-y-3">
-                    <input type="text" placeholder="Evaluator Name" id="evaluatorName" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
-                    <input type="text" placeholder="Customer Company (if applicable)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                    <input type="text" placeholder="Billing Address" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
-                    <input type="email" placeholder="Contact Email" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
-                    <input type="tel" placeholder="Contact Phone" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="text" name="Evaluator_Name" placeholder="Evaluator Name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
+                    <input type="text" name="Customer_Company" placeholder="Customer Company (if applicable)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="text" name="Billing_Address" placeholder="Billing Address" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
+                    <input type="email" name="_replyto" placeholder="Contact Email (Used to reply)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
+                    <input type="tel" name="Contact_Phone" placeholder="Contact Phone" class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
             </section>
 
-            <!-- Section 3: Product on Loan (Pre-filled/Static) -->
-            <section class="border border-yellow-200 p-4 rounded-lg bg-yellow-50">
-                <h2 class="text-xl font-bold text-yellow-700 mb-4">3. Product on Loan</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
-                    <div><span class="font-semibold">Product Name:</span> <input type="text" value="[PRODUCT NAME]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
-                    <div><span class="font-semibold">Model / SKU:</span> <input type="text" value="[MODEL / SKU NUMBER]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
-                    <div><span class="font-semibold">Serial Number:</span> <input type="text" value="[PRODUCT SERIAL NUMBER]" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required></div>
-                    <div class="md:col-span-2"><span class="font-semibold">Trade Price (for invoicing):</span> <input type="text" value="[TRADE PRICE AMOUNT HERE - e.g., $X,XXX.00]" class="w-full p-1 border-b font-extrabold text-red-600 border-red-300 focus:border-indigo-500 rounded-sm" required id="tradePrice"></div>
+            <!-- Section 3: Loan Details and Terms -->
+            <section class="border border-indigo-200 p-4 rounded-lg bg-indigo-50">
+                <h2 class="text-xl font-bold text-indigo-700 mb-4">3. Loan Dates & Terms</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 mb-4">
+                    <div><span class="font-semibold">Loan Start Date:</span> 
+                        <input type="date" name="Loan_Start_Date" class="w-full p-1 border-b border-gray-300 focus:border-indigo-500 rounded-sm" required id="loanStartDate">
+                    </div>
+                    <div><span class="font-semibold">Scheduled Return Date:</span> 
+                        <input type="date" name="Scheduled_Return_Date" class="w-full p-1 border-b font-bold border-red-500 focus:border-indigo-500 rounded-sm" required id="scheduledReturnDate" readonly>
+                    </div>
+                    <div class="md:col-span-2">
+                        <span class="font-semibold">Invoice Value (Trade Price):</span> 
+                        <input type="text" id="tradePriceDisplayInput" name="Trade_Price_INVOICE_VALUE" value="Loading..." class="w-full p-1 border-b font-extrabold text-red-600 border-red-300 rounded-sm input-static" readonly>
+                        <p class="text-xs text-red-700 mt-1">This is the amount you will be invoiced if the product is not returned on time.</p>
+                    </div>
                 </div>
-            </section>
 
-            <!-- Section 4: Loan Terms and Conditions -->
-            <section class="p-6 rounded-lg bg-white border border-gray-200 shadow-md">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">4. Loan Terms and Conditions</h2>
-                <ol class="list-decimal list-inside space-y-3 text-gray-700">
-                    <li>**Loan Period:** The loan period is strictly **two (2) weeks (14 calendar days)**, beginning on the Loan Start Date.</li>
-                    <li>**Product Care:** The Evaluator agrees to handle the product with reasonable care and is responsible for any damage, loss, or theft that occurs during the loan period.</li>
-                    <li>**Return Obligation:** The Evaluator **MUST** return the product, complete with all original accessories and packaging, to the Lending Company no later than the Scheduled Return Date.</li>
-                    <li class="p-3 bg-red-50 border-l-4 border-red-500 font-semibold">
-                        **Failure to Return Clause:** If the product is not returned to the Lending Company on or before the Scheduled Return Date, the Evaluator hereby agrees and acknowledges that AUDIO RESURGENCE will immediately invoice the Evaluator the full Trade Price amount of <span id="tradePriceDisplay" class="text-red-700">[TRADE PRICE AMOUNT HERE]</span> listed in Section 3. This invoice will be due for immediate payment upon receipt. The Evaluator's signature below constitutes a binding agreement to this invoicing term.
+                <ol class="list-decimal list-inside space-y-3 text-gray-700 mt-6">
+                    <li>**Loan Period:** The loan period is strictly **two (2) weeks (14 calendar days)**.</li>
+                    <li>**Product Care:** The Evaluator is responsible for any damage, loss, or theft.</li>
+                    <li>**Return Obligation:** The Evaluator **MUST** return the product by the Scheduled Return Date.</li>
+                    <li class="p-3 bg-red-100 border-l-4 border-red-600 font-semibold">
+                        **Failure to Return Clause (CRITICAL):** If the product is not returned on or before the Scheduled Return Date, the Evaluator agrees that AUDIO RESURGENCE will immediately invoice them the full Trade Price amount shown above.
                     </li>
-                    <li>**Condition of Return:** The product must be returned in good working order and in the same condition as when received, subject only to normal wear and tear from use.</li>
+                    <li>**Condition of Return:** The product must be returned in good working order.</li>
                 </ol>
             </section>
 
-            <!-- Section 5: Authorization and Signature -->
+
+            <!-- Section 4: Authorization and Signature -->
             <section class="p-6 rounded-lg bg-white border border-gray-300 shadow-xl">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">5. Authorization and Electronic Signature</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">4. Authorization and Electronic Signature</h2>
                 
-                <p class="text-sm text-gray-600 mb-4">By providing your electronic signature below, you confirm that you have read, understood, and agree to all the terms and conditions, specifically the invoicing clause for non-return.</p>
+                <p class="text-sm text-gray-600 mb-4">By signing below, you agree to all terms, specifically the invoicing clause for non-return.</p>
 
                 <!-- Signature Pad -->
                 <div class="mb-4">
                     <label for="signatureCanvas" class="block text-lg font-medium text-gray-700 mb-2">Electronic Signature (Draw Below)</label>
                     <canvas id="signatureCanvas" class="w-full bg-white rounded-md" height="150"></canvas>
                     <button type="button" id="clearSignature" class="mt-2 text-sm text-red-600 hover:text-red-800 font-medium">Clear Signature</button>
-                    <input type="hidden" id="signatureData" required>
+                    <!-- This hidden field will hold the Base64 image data for Formspree -->
+                    <input type="hidden" name="Evaluator_Signature_Data_Base64" id="signatureDataInput" required>
                 </div>
 
                 <!-- Print Name & Date -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                     <div>
                         <label for="printedName" class="block text-sm font-medium text-gray-700">Evaluator Name (Print)</label>
-                        <input type="text" id="printedName" class="w-full p-2 border border-gray-300 rounded-md mt-1 focus:ring-indigo-500 focus:border-indigo-500" required>
+                        <input type="text" id="printedName" name="Evaluator_Printed_Name" class="w-full p-2 border border-gray-300 rounded-md mt-1 focus:ring-indigo-500 focus:border-indigo-500" required>
                     </div>
                     <div>
                         <label for="signatureDate" class="block text-sm font-medium text-gray-700">Date of Signature</label>
-                        <input type="date" id="signatureDate" class="w-full p-2 border border-gray-300 rounded-md mt-1 focus:ring-indigo-500 focus:border-indigo-500" required>
+                        <input type="date" id="signatureDate" name="Date_Signed" class="w-full p-2 border border-gray-300 rounded-md mt-1 focus:ring-indigo-500 focus:border-indigo-500" required>
                     </div>
                 </div>
             </section>
 
             <!-- Submit Button -->
             <div class="text-center pt-4">
-                <button type="submit" class="w-full sm:w-1/2 py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 transition duration-150 ease-in-out transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
+                <button type="submit" id="submitButton" class="w-full sm:w-1/2 py-3 px-6 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 transition duration-150 ease-in-out transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
                     Sign & Confirm Loan Agreement
                 </button>
             </div>
@@ -134,25 +163,39 @@
         const ctx = canvas.getContext('2d');
         const clearButton = document.getElementById('clearSignature');
         const form = document.getElementById('loanAgreementForm');
-        const signatureDataInput = document.getElementById('signatureData');
+        const signatureDataInput = document.getElementById('signatureDataInput');
         const messageBox = document.getElementById('messageBox');
-        
+        const submitButton = document.getElementById('submitButton');
+
         let drawing = false;
         let lastX = 0;
         let lastY = 0;
 
-        // Utility to update the trade price display in the terms section
-        const tradePriceInput = document.getElementById('tradePrice');
-        const tradePriceDisplay = document.getElementById('tradePriceDisplay');
-
-        function updateTradePriceDisplay() {
-            tradePriceDisplay.textContent = tradePriceInput.value || "[TRADE PRICE AMOUNT HERE]";
+        // --- URL Parameter Pre-filling Logic ---
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            // Decode the URI component for clean text (e.g., 'Model%20X' becomes 'Model X')
+            return urlParams.get(param) ? decodeURIComponent(urlParams.get(param)) : null;
         }
 
-        tradePriceInput.addEventListener('input', updateTradePriceDisplay);
-        document.addEventListener('DOMContentLoaded', updateTradePriceDisplay); // Initial load
+        function preFillFields() {
+            const productName = getQueryParam('product');
+            const serialNumber = getQueryParam('serial');
+            const tradePrice = getQueryParam('price');
+            const modelSku = getQueryParam('model');
 
-        // Utility to calculate return date (14 days after start date)
+            // Default values if no URL parameters are found
+            const defaultText = "NOT SPECIFIED (Check URL)";
+
+            document.getElementById('productNameInput').value = productName || defaultText;
+            document.getElementById('serialNumberInput').value = serialNumber || defaultText;
+            document.getElementById('tradePriceDisplayInput').value = tradePrice || "$-.--";
+            document.getElementById('modelSkuInput').value = modelSku || defaultText;
+        }
+        document.addEventListener('DOMContentLoaded', preFillFields);
+
+
+        // --- Date Calculation Logic (14 days) ---
         const loanStartDateInput = document.getElementById('loanStartDate');
         const scheduledReturnDateInput = document.getElementById('scheduledReturnDate');
 
@@ -160,7 +203,6 @@
             const startDate = loanStartDateInput.value;
             if (startDate) {
                 const date = new Date(startDate);
-                // Set time to noon UTC to avoid timezone issues when adding days
                 date.setUTCHours(12, 0, 0, 0); 
                 date.setDate(date.getDate() + 14);
                 
@@ -171,30 +213,27 @@
             }
         });
 
-        // Set up canvas context
-        function setupCanvas() {
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = '#000000';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill with white background
+        // --- Canvas Drawing Logic ---
+        function setupCanvas(context = ctx) {
+            context.lineWidth = 3;
+            context.lineCap = 'round';
+            context.strokeStyle = '#000000';
+            context.fillStyle = '#ffffff';
+            context.fillRect(0, 0, canvas.width, canvas.height); 
         }
-        
         setupCanvas();
 
         function draw(e) {
             if (!drawing) return;
+            e.preventDefault();
             
-            // Get position relative to canvas
             const rect = canvas.getBoundingClientRect();
             let currentX, currentY;
             
             if (e.touches) {
-                // Touch events
                 currentX = e.touches[0].clientX - rect.left;
                 currentY = e.touches[0].clientY - rect.top;
             } else {
-                // Mouse events
                 currentX = e.clientX - rect.left;
                 currentY = e.clientY - rect.top;
             }
@@ -232,72 +271,95 @@
         function clearCanvas() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             setupCanvas();
-            signatureDataInput.value = ''; // Clear hidden data as well
+            signatureDataInput.value = ''; 
         }
 
-        // Event Listeners for drawing
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
         window.addEventListener('mouseup', stopDrawing);
-
-        // Event Listeners for touch
         canvas.addEventListener('touchstart', startDrawing);
         canvas.addEventListener('touchmove', draw);
         window.addEventListener('touchend', stopDrawing);
-
-        // Clear button listener
         clearButton.addEventListener('click', clearCanvas);
 
-        // Form Submission Handler
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Check if a signature has been drawn (check if canvas is not blank)
-            const imageData = canvas.toDataURL();
-            const blankCanvas = document.createElement('canvas');
-            blankCanvas.width = canvas.width;
-            blankCanvas.height = canvas.height;
-            const blankData = blankCanvas.toDataURL();
-
-            if (imageData === blankData) {
-                showMessage('Please provide your signature before submitting.', 'bg-red-100 text-red-700 border border-red-200');
-                return;
-            }
-
-            // Capture the signature data
-            signatureDataInput.value = imageData;
-
-            // Gather all form data (for demonstration purposes)
-            const formData = {
-                evaluatorName: document.getElementById('evaluatorName').value,
-                printedName: document.getElementById('printedName').value,
-                signatureDate: document.getElementById('signatureDate').value,
-                loanStartDate: loanStartDateInput.value,
-                scheduledReturnDate: scheduledReturnDateInput.value,
-                tradePrice: tradePriceInput.value,
-                signatureImage: signatureDataInput.value,
-                // Add other fields as needed
-            };
-            
-            // In a real application, you would send this 'formData' object to your backend server
-            // for secure storage and verification.
-            console.log('--- Agreement Submitted ---');
-            console.log(formData);
-            console.log('---------------------------');
-            
-            showMessage('Agreement successfully signed and submitted. Thank you!', 'bg-green-100 text-green-700 border border-green-200');
-
-            // Optionally disable the form after successful submission
-            form.querySelector('button[type="submit"]').disabled = true;
-        });
-
+        // --- Submission Handler with Formspree AJAX ---
         function showMessage(msg, style) {
             messageBox.textContent = msg;
             messageBox.className = style + ' text-center p-4 rounded-lg text-lg font-semibold mt-4 block';
             setTimeout(() => {
                 messageBox.classList.add('hidden');
-            }, 5000);
+            }, 8000); // Increased timeout for visibility
         }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+            
+            // Check if signature is blank
+            const imageData = canvas.toDataURL('image/png');
+            const blankCanvas = document.createElement('canvas');
+            blankCanvas.width = canvas.width;
+            blankCanvas.height = canvas.height;
+            setupCanvas(blankCanvas.getContext('2d')); 
+            const blankData = blankCanvas.toDataURL('image/png');
+            
+            if (imageData === blankData) {
+                showMessage('Please provide your signature before submitting.', 'bg-red-100 text-red-700 border border-red-200');
+                return;
+            }
+
+            signatureDataInput.value = imageData;
+
+            // Prepare for AJAX submission
+            const formData = new FormData(form);
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            showMessage('Processing signature and sending agreement...', 'bg-yellow-100 text-yellow-700 border border-yellow-200');
+
+
+            try {
+                // Post data to Formspree endpoint
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json' 
+                    }
+                });
+
+                if (response.ok) {
+                    showMessage('Agreement successfully signed and submitted. Thank you!', 'bg-green-100 text-green-700 border border-green-200');
+                    form.reset(); // Reset visible fields
+                    clearCanvas();
+                    // Keep button disabled to prevent duplicate submissions
+                    submitButton.textContent = 'Agreement Submitted!';
+                } else {
+                    const errorText = await response.text();
+                    console.error("Formspree Error Response:", errorText);
+                    
+                    let errorMessage = 'Submission failed. The Formspree URL might be wrong or unconfirmed.';
+                    
+                    try {
+                        const data = JSON.parse(errorText);
+                        if (data.errors && data.errors.length > 0) {
+                             errorMessage = `Submission failed: ${data.errors[0].message}`;
+                        } else if (data.error) {
+                            errorMessage = `Submission failed: ${data.error}`;
+                        }
+                    } catch (e) {
+                        // If JSON parsing fails, use a generic error message
+                    }
+
+                    showMessage(errorMessage, 'bg-red-100 text-red-700 border border-red-200');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Sign & Confirm Loan Agreement';
+                }
+            } catch (error) {
+                console.error("Network or Fetch Error:", error);
+                showMessage('Network error occurred. Please check your hosting link and Formspree URL.', 'bg-red-100 text-red-700 border border-red-200');
+                submitButton.disabled = false;
+                submitButton.textContent = 'Sign & Confirm Loan Agreement';
+            }
+        });
     </script>
 
 </body>
