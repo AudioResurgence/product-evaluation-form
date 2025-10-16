@@ -134,6 +134,8 @@
                         **Failure to Return Clause (CRITICAL):** If the product is not returned on or before the Scheduled Return Date, the Evaluator agrees that AUDIO RESURGENCE will immediately invoice them the full Trade Price amount shown above.
                     </li>
                     <li>**Condition of Return:** The product must be returned in good working order.</li>
+                    <!-- NEW POINT ADDED HERE -->
+                    <li>**Return Shipping:** The Evaluator is responsible for arranging and paying for the return shipment of the Product at their own cost.</li>
                 </ol>
             </section>
 
@@ -196,7 +198,7 @@
         // --- URL Parameter Pre-filling Logic ---
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
-            // Decode the URI component for clean text (e.g., 'Model%20X' becomes 'Model X')
+            // decodeURIComponent handles encoded characters like %2B (for +) or %20 (for space)
             return urlParams.get(param) ? decodeURIComponent(urlParams.get(param)) : null;
         }
 
